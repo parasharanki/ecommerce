@@ -19,11 +19,11 @@ const productSchema = new Schema({
    
   },
   actualPrice:{
-    type: String,
+    type: Number,
    
   },
    discountedPrice:{
-    type: String,
+    type: Number,
    
   },
 
