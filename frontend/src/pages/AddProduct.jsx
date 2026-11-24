@@ -1,8 +1,9 @@
-
 import { useState } from "react";
 import instance from "../api/axios";
+import toast from "react-hot-toast";
 
 function AddProduct() {
+const [message, setMessage] = useState("");
   const [data, setData] = useState({
     name: "",
     slug: "",
@@ -11,6 +12,11 @@ function AddProduct() {
     discountedPrice: "",
     description: "",
   });
+  const [image, setImage] = useState(null);
+
+  function handleImage(e) {
+    setImage(e.target.files[0] || null);
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -21,10 +27,25 @@ function AddProduct() {
     e.preventDefault();
 
     try {
-      const response = await instance.post("/product/add", data);
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const response = await instance.post("/product/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log("Product added:", response.data);
-
+     if (response.status === 201) {
+        setMessage(response.data?.message || "Product added successfully!");
+        console.log("Product added:", response.data);
+     }
       setData({
         name: "",
         slug: "",
@@ -32,19 +53,21 @@ function AddProduct() {
         actualPrice: "",
         discountedPrice: "",
         description: "",
+        image: "",
       });
 
+      
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
     }
   }
 
   return (
+    
     <div className="max-w-xl mx-auto p-6 bg-white shadow rounded-lg">
       <h2 className="text-2xl font-bold mb-6">Add New Product</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
         <div>
           <label>Product Name</label>
           <input
@@ -116,6 +139,15 @@ function AddProduct() {
             rows="4"
           />
         </div>
+        <div>
+          <label>Image</label>
+          <input
+            type="file"
+            name="Image"
+            onChange={handleImage}
+            className="w-full border p-2 rounded"
+          />
+        </div>
 
         <button
           type="submit"
@@ -123,8 +155,14 @@ function AddProduct() {
         >
           Add Product
         </button>
-
+      
+    
       </form>
+         {message && (
+        <p style={{ color: "green", fontWeight: "bold", marginBottom: "10px" }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }

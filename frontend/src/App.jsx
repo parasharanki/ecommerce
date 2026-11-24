@@ -9,7 +9,11 @@ export default function App() {
   // const Homepage= lazy(() => import("./pages/Homepage.js"));
   return (
     <div>
+     
+     
       <AddProduct/>
+     
+      
     </div>
   )
 }
