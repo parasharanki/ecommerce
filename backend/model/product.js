@@ -1,33 +1,32 @@
-import {Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
+import upload from "../middlewares/uploadMiddlewear.js";
 
 const productSchema = new Schema({
-  name:{
+  name: {
     type: String,
     required: true,
   },
-   slug:{
+  slug: {
     type: String,
     required: true,
-    unique:true,
+    unique: true,
   },
-  category:{
+  category: {
     type: String,
-   
   },
-  description:{
+  description: {
     type: String,
-   
   },
-  actualPrice:{
+  actualPrice: {
     type: Number,
-   
   },
-   discountedPrice:{
+  discountedPrice: {
     type: Number,
-   
   },
-
-})
+  image: {
+    type: String,
+  },
+});
 
 const Product = model("product", productSchema);
 export default Product;
